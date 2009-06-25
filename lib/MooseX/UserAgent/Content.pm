@@ -24,3 +24,22 @@ sub get_content {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+RTGI::Role::UserAgent::Content
+
+=head1 DESCRIPTION
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+franck cuny  C<< <franck@lumberjaph.net> >>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2009, RTGI
+All rights reserved.
