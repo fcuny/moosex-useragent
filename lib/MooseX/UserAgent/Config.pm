@@ -15,7 +15,7 @@ has 'agent' => (
         my $conf = $self->useragent_conf;
         $ua->agent( $conf->{name} ) if $conf->{name};
         $ua->from( $conf->{mail} )  if $conf->{mail};
-        $ua->max_size( $conf->{max_size} || 3000000 );
+        $ua->max_size( $conf->{max_size} ) if $conf->{max_size};
         $ua->timeout( $conf->{timeout}   || 180 );
         $ua;
     }
