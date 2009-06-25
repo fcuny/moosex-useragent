@@ -16,7 +16,7 @@ has 'agent' => (
         $ua->agent( $conf->{name} ) if $conf->{name};
         $ua->from( $conf->{mail} )  if $conf->{mail};
         $ua->max_size( $conf->{max_size} || 3000000 );
-        $ua->timeout( $conf->{timeout}   || 30 );
+        $ua->timeout( $conf->{timeout}   || 180 );
         $ua;
     }
 );
@@ -55,21 +55,21 @@ RTGI::Role::UserAgent::Config
 =item B<name>
 
 UserAgent string used by the HTTP client. Default is to use the LWP or
-AnyEvent::HTTP string.
+AnyEvent::HTTP string. See L<LWP::UserAgent> or L<AnyEvent::HTTP>.
 
 =item B<mail>
 
 Mail string used by the HTTP client (only for LWP). Default is to use the
-LWP string.
+LWP string. See L<LWP::UserAgent>
 
 =item B<max_size>
 
-Max size that will be fetched by the useragent, in octets (only for LWP).
-Default is set to 3 000 000.
+size limit for response content. The default is 3 000 000 octets. See
+L<LWP::UserAgent>.
 
 =item B<timeout>
 
-Time out. Default is set to 30.
+Timeout value in seconds. The default timeout() value is 180 seconds
 
 =item B<cache>
 
@@ -77,15 +77,20 @@ Time out. Default is set to 30.
 
 =item B<use_cache>
 
-If you need caching, set to 1. Default is no cache.
+Set to true to activate caching. Defaults is false.
 
 =item B<root>
 
-Where to store the cache.
+The location in the filesystem that will hold the root of the cache.
 
 =item B<default_expires_in>
 
+The default expiration time for objects place in the cache. Defaults to $EXPIRES_NEVER if not explicitly set.
+
 =item B<namespace>
+
+The namespace associated with this cache. Defaults to "Default" if not
+explicitly set.
 
 =back
 

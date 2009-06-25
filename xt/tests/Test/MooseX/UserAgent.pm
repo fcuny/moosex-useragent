@@ -17,7 +17,7 @@ use Cache::MemoryCache;
         is      => 'rw',
         default => sub {
             return {
-                name     => 'Mozilla/5.0 (compatible; RTGI; http://rtgi.fr/)',
+                name     => 'Mozilla/5.0 (compatible; LWP; RTGI; http://rtgi.fr/)',
                 mail     => 'bot@rtgi.fr',
                 timeout  => 30,
                 cache    => { use_cache => 0, },
@@ -37,7 +37,7 @@ use Cache::MemoryCache;
         is      => 'rw',
         default => sub {
             return {
-                name     => 'Mozilla/5.0 (compatible; RTGI; http://rtgi.fr/)',
+                name     => 'Mozilla/5.0 (compatible; Async; RTGI; http://rtgi.fr/)',
                 mail     => 'bot@rtgi.fr',
                 timeout  => 30,
                 cache    => { use_cache => 0, },
@@ -75,6 +75,7 @@ sub fetch : Tests(14) {
         # test with cache
         $obj = $ua->new(
             useragent_conf => {
+                name     => 'Mozilla/5.0 (compatible; Async; RTGI; http://rtgi.fr/)',
                 cache => {
                     use_cache => 1,
                     namespace => 'testua',
@@ -91,19 +92,19 @@ sub fetch : Tests(14) {
     }
 }
 
-sub get_content : Tests(8) {
-    my $test = shift;
+#sub get_content : Tests(8) {
+    #my $test = shift;
 
-    foreach my $ua (@ua_roles) {
-        can_ok $ua, 'get_content';
+    #foreach my $ua (@ua_roles) {
+        #can_ok $ua, 'get_content';
 
-        ok my $obj = $ua->new(), ' ... object is created';
-        my $url = 'http://google.com';
-        my $res = $obj->fetch($url);
-        is $res->code, "200", "... fetch is a success";
-        my $content = $obj->get_content($res);
-        like $content, qr/google/, "... and content is good";
-    }
-}
+        #ok my $obj = $ua->new(), ' ... object is created';
+        #my $url = 'http://google.com';
+        #my $res = $obj->fetch($url);
+        #is $res->code, "200", "... fetch is a success";
+        #my $content = $obj->get_content($res);
+        #like $content, qr/google/, "... and content is good";
+    #}
+#}
 
 1;
