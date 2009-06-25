@@ -6,6 +6,15 @@ all_from 'lib/MooseX/UserAgent.pm';
 requires 'Moose';
 requires 'Test::Class';
 requires 'Test::Exception';
+requires 'URI';
+requires 'HTTP::Request';
+requires 'HTTP::Response';
+requires 'LWP::UserAgent';
+requires 'Cache::FileCache';
+requries 'Cache::MemoryCache;'
+requires 'AnyEvent::HTTP';
+requires 'Compress::Zlib';
+requires 'HTML::Encoding';
 
 tests 't/*.t';
 author_tests 'xt';
