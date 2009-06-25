@@ -92,19 +92,19 @@ sub fetch : Tests(14) {
     }
 }
 
-#sub get_content : Tests(8) {
-    #my $test = shift;
+sub get_content : Tests(8) {
+    my $test = shift;
 
-    #foreach my $ua (@ua_roles) {
-        #can_ok $ua, 'get_content';
+    foreach my $ua (@ua_roles) {
+        can_ok $ua, 'get_content';
 
-        #ok my $obj = $ua->new(), ' ... object is created';
-        #my $url = 'http://google.com';
-        #my $res = $obj->fetch($url);
-        #is $res->code, "200", "... fetch is a success";
-        #my $content = $obj->get_content($res);
-        #like $content, qr/google/, "... and content is good";
-    #}
-#}
+        ok my $obj = $ua->new(), ' ... object is created';
+        my $url = 'http://google.com';
+        my $res = $obj->fetch($url);
+        is $res->code, "200", "... fetch is a success";
+        my $content = $obj->get_content($res);
+        like $content, qr/google/, "... and content is good";
+    }
+}
 
 1;
