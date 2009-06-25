@@ -63,7 +63,7 @@ RTGI::Role::UserAgent::Async - Fetch an url using AnyEvent::HTTP
 
 =head1 AUTHOR
 
-franck cuny  C<< <franck@lumberjaph.net> >>
+franck cuny  C<< <franck.cuny@rtgi.fr> >>
 
 =head1 LICENCE AND COPYRIGHT
 

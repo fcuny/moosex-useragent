@@ -56,7 +56,7 @@ RTGI::Role::UserAgent::Cache
 
 =head1 AUTHOR
 
-franck cuny  C<< <franck@lumberjaph.net> >>
+franck cuny  C<< <franck.cuny@rtgi.fr> >>
 
 =head1 LICENCE AND COPYRIGHT
 
