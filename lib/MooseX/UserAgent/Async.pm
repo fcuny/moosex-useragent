@@ -32,3 +32,40 @@ sub fetch {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+RTGI::Role::UserAgent::Async - Fetch an url using AnyEvent::HTTP 
+
+=head1 SYNOPSIS
+
+    package Foo;
+
+    use Moose;
+    with qw/MooseX::UserAgent::Async/;
+
+    has useragent_conf => (
+        isa     => 'HashRef',
+        default => sub {
+            { name => 'myownbot', };
+        }
+    );
+
+    my $res = $self->fetch($url, $cache);
+    ...
+    my $content = $self->get_content($res);
+
+=head1 DESCRIPTION
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+franck cuny  C<< <franck@lumberjaph.net> >>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2009, RTGI
+All rights reserved.
