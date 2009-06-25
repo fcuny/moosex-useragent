@@ -115,6 +115,8 @@ protocol.
 If there is a cache configuration, the url will be checked in the cache,
 and if there is a match, a 304 HTTP code will be returned.
 
+Return a HTTP::Response object.
+
 =item B<get_content>
 
 This method will return a content in utf8.

@@ -64,6 +64,23 @@ RTGI::Role::UserAgent::Async - Fetch an url using AnyEvent::HTTP
 
 =head1 DESCRIPTION
 
+=head2 METHODS
+
+=over 4
+
+=item B<fetch>
+
+This method will fetch a given URL. This method handle only the http
+protocol.
+
+If there is a cache configuration, the url will be checked in the cache,
+and if there is a match, a 304 HTTP code will be returned.
+
+Return a HTTP::Response object. This headers are different from a
+HTTP::Response from LWP::UserAgent.
+
+=back
+
 =head1 BUGS AND LIMITATIONS
 
 =head1 AUTHOR
