@@ -1,77 +1,29 @@
 package MooseX::UserAgent;
 
-use Moose::Role;
-
 our $VERSION = '0.2.0';
 
-use Encode;
+use Moose::Role;
+with qw/MooseX::UserAgent::Config MooseX::UserAgent::Content
+    MooseX::UserAgent::Cache/;
+
+use URI;
+use HTTP::Request;
 use HTTP::Response;
-use LWPx::ParanoidAgent;
-use HTML::Encoding 'encoding_from_http_message';
-use Compress::Zlib;
-
-has 'agent' => (
-    isa     => 'Object',
-    is      => 'rw',
-    lazy    => 1,
-    default => sub {
-        my $self = shift;
-        my $ua   = LWPx::ParanoidAgent->new;
-
-        my $conf = $self->useragent_conf;
-        $ua->agent( $conf->{name} ) if $conf->{name};
-        $ua->from( $conf->{mail} )  if $conf->{mail};
-        $ua->max_size( $conf->{max_size} || 3000000 );
-        $ua->timeout( $conf->{timeout}   || 30 );
-        $ua;
-    }
-);
+use LWP::UserAgent;
 
 sub fetch {
     my ( $self, $url ) = @_;
 
     my $req = HTTP::Request->new( GET => URI->new( $url ) );
 
-    $req->header('Accept-Encoding', 'gzip');
-
-    if ( $self->context->{ useragent }->{ use_cache } ) {
-        my $ref = $self->cache->get( $url );
-        if ( defined $ref && $ref->{ LastModified } ne '' ) {
-            $req->header( 'If-Modified-Since' => $ref->{ LastModified } );
-        }
-    }
+    $req->header( 'Accept-Encoding', 'gzip' );
+    my $last_modified = $self->get_ua_cache($url);
+    $req->header( 'If-Modified-Since' => $last_modified )
+        if $last_modified;
 
     my $res = $self->agent->request( $req );
-
-    if ( $self->context->{ useragent }->{ use_cache } ) {
-        $self->cache->set(
-            $url,
-            {   ETag         => $res->header( 'Etag' )          || '',
-                LastModified => $res->header( 'Last-Modified' ) || ''
-            }
-        );
-    }
-
+    $self->store_ua_cache($url, $res);
     $res;
-}
-
-sub get_content {
-    my ( $self, $res ) = @_;
-
-    my $enc = encoding_from_http_message($res);
-
-    my $content = $res->content;
-    if ( $res->content_encoding && $res->content_encoding eq 'gzip' ) {
-        $content = Compress::Zlib::memGunzip($content);
-    }
-
-    if ( $enc && $enc !~ /utf-8/i ) {
-        $content = $res->decoded_content( raise_error => 1 );
-        if ($@) {
-            $content = Encode::decode( $enc, $content );
-        }
-    }
-    $content;
 }
 
 1;
@@ -105,35 +57,19 @@ RTGI::Role::UserAgent - Fetch an url using LWP as the HTTP library
     mail: 'bot@rtgi.fr'
     max_size: 3000000
     timeout: 30
-
-    --- kwalify schema
-    "use_cache":
-      name: use_cache
-      desc: use cache
-      required: true
-      type: int
-    "name":
-      name: name
-      desc: useragent string
-      required: true
-      type: str
-    "mail":
-      name: mail
-      desc: mail for the useragent
-      required: true
-      type: str
-    "timeout":
-      name: timeout
-      desc: timeout
-      required: true
-      type: int
-    "max_size":
-      name: max_size
-      desc: max size
-      required: true
-      type: int
+    cache:
+      use_cache: 1
+      root: /tmp
+      default_expires_in: 5 days
+      namespace: my::useragent
 
 =head1 DESCRIPTION
+
+This is a role which provides a useragent to a Moose Class. 
+
+The role will do the caching for you if you need it, using Cache::*Cache
+modules. By default it uses Cache::FileCache, but you can use any Cache
+modules you want.
 
 =head2 METHODS
 
@@ -167,7 +103,7 @@ This method will return a content in utf8.
 
 =head1 AUTHOR
 
-franck cuny  C<< <franck.cuny@rtgi.fr> >>
+franck cuny  C<< <franck@lumberjaph.net> >>
 
 =head1 LICENCE AND COPYRIGHT
 
