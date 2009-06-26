@@ -19,6 +19,7 @@ sub get_content {
         if ($@) {
             $content = Encode::decode( $enc, $content );
         }
+        $content = Encode::encode("utf-8", $content);
     }
     $content;
 }
