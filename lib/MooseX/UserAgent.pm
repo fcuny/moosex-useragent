@@ -14,6 +14,8 @@ with qw/
     MooseX::UserAgent::Cache
     /;
 
+has _LWPLIB => ( isa => 'Str', is => 'ro', default => 'LWP::UserAgent' );
+
 sub fetch {
     my ( $self, $url ) = @_;
 

@@ -8,9 +8,10 @@ has 'agent' => (
     lazy    => 1,
     default => sub {
         my $self = shift;
-        my $ua   = LWP::UserAgent->new;
+        my $ua   = $self->_LWPLIB->new;
 
         if (!$self->can('useragent_conf')) {
+            # TODO
         }
         my $conf = $self->useragent_conf;
         $ua->agent( $conf->{name} ) if $conf->{name};
