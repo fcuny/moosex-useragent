@@ -1,8 +1,7 @@
 package MooseX::UserAgent::Async;
 
 use Moose::Role;
-with qw/MooseX::UserAgent::Config MooseX::UserAgent::Content
-    MooseX::UserAgent::Cache/;
+with qw/MooseX::UserAgent::Content MooseX::UserAgent::Cache/;
 
 use AnyEvent::HTTP;
 use HTTP::Response;
