@@ -6,7 +6,7 @@ use base 'Test::Class';
 use Test::Exception;
 use Test::More;
 use Cache::MemoryCache;
-
+use RTGI::Storage::Client;
 {
 
     package Test::UserAgent;
@@ -48,6 +48,26 @@ use Cache::MemoryCache;
     );
     1;
 }
+{
+
+    package Test::UserAgent::Paranoid;
+    use Moose;
+    with qw/MooseX::UserAgent::Paranoid/;
+    has useragent_conf => (
+        isa     => 'HashRef',
+        is      => 'rw',
+        default => sub {
+            return {
+                name =>
+                    'Mozilla/5.0 (compatible; Paranoid; RTGI; http://rtgi.fr/)',
+                mail    => 'bot@rtgi.fr',
+                timeout => 30,
+                cache   => { use_cache => 0, },
+            };
+        }
+    );
+    1;
+}
 
 sub cache {
     my $cache = new Cache::MemoryCache(
@@ -59,9 +79,10 @@ sub cache {
     return $cache;
 }
 
-my @ua_roles = (qw/Test::UserAgent Test::UserAgent::Async/);
+my @ua_roles = (qw/Test::UserAgent Test::UserAgent::Async
+    Test::UserAgent::Paranoid/);
 
-sub fetch : Tests(14) {
+sub fetch : Tests(21) {
     my $test = shift;
 
     my $url = 'http://lumberjaph.net/blog';
@@ -93,7 +114,7 @@ sub fetch : Tests(14) {
     }
 }
 
-sub get_content : Tests(8) {
+sub get_content : Tests(12) {
     my $test = shift;
 
     my $url = 'http://lumberjaph.net';
@@ -107,7 +128,7 @@ sub get_content : Tests(8) {
     }
 }
 
-sub test_cache : Tests(4) {
+sub test_cache : Tests(6) {
     my $test = shift;
     my $url = 'http://en.wikipedia.org';
 
@@ -128,5 +149,24 @@ sub test_cache : Tests(4) {
     can_ok $obj, 'get_content';
     $res = $obj->fetch($url);
     is $res->code, 304, '... already in cache';
+
+    $obj = Test::UserAgent::Paranoid->new(
+        useragent_conf => { cache => { use_cache => 1 } },
+        ua_cache       => $test->cache
+        ),
+        ' ... object is created';
+    can_ok $obj, 'get_content';
+    $res = $obj->fetch($url);
+    is $res->code, 304, '... already in cache';
 }
+
+sub test_lwplib : Tests(2) {
+    my $test   = shift;
+    my $ua_lwp = Test::UserAgent->new();
+    is $ua_lwp->_LWPLIB, 'LWP::UserAgent', '... use LWP::UserAgent';
+    my $ua_paranoid = Test::UserAgent::Paranoid->new();
+    is $ua_paranoid->_LWPLIB, 'LWPx::ParanoidAgent',
+        '... use LWPx::ParanoidAgent';
+}
+
 1;
