@@ -1,4 +1,7 @@
 Revision history for Perl extension MooseX::UserAgent
 
+0.2.1   Fri 17 Jul 2009 05:18:14 PM CEST
+        - add ParanoidAgent, Async and LWP
+
 0.01    Wed Jun 24 17:17:00 2009
         - original version
