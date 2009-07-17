@@ -12,7 +12,7 @@ requires 'HTTP::Response';
 requires 'LWP::UserAgent';
 requires 'LWPx::ParanoidAgent';
 requires 'Cache::FileCache';
-requires 'Cache::MemoryCache;'
+requires 'Cache::MemoryCache';
 requires 'AnyEvent::HTTP';
 requires 'Compress::Zlib';
 requires 'HTML::Encoding';
