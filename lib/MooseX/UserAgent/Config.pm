@@ -1,23 +1,29 @@
 package MooseX::UserAgent::Config;
 
 use Moose::Role;
+use Carp qw/croak/;
 
 has 'agent' => (
     isa     => 'Object',
     is      => 'rw',
     lazy    => 1,
     default => sub {
-        my $self = shift;
-        my $ua   = $self->_LWPLIB->new;
+        my $self  = shift;
+        my $class = $self->_LWPLIB;
+        eval "  require $class ";
+        if ($@) {
+            croak "can't load " . $self->_LWPLIB . " : " . $@;
+        }
+        my $ua = $self->_LWPLIB->new;
 
-        if (!$self->can('useragent_conf')) {
-            # TODO
+        if ( !$self->can('useragent_conf') ) {
+            croak "no useragent_conf";
         }
         my $conf = $self->useragent_conf;
-        $ua->agent( $conf->{name} ) if $conf->{name};
-        $ua->from( $conf->{mail} )  if $conf->{mail};
+        $ua->agent( $conf->{name} )        if $conf->{name};
+        $ua->from( $conf->{mail} )         if $conf->{mail};
         $ua->max_size( $conf->{max_size} ) if $conf->{max_size};
-        $ua->timeout( $conf->{timeout}   || 180 );
+        $ua->timeout( $conf->{timeout} || 180 );
         $ua;
     }
 );
@@ -107,6 +113,7 @@ franck cuny  C<< <franck.cuny@rtgi.fr> >>
 
 Copyright (c) 2009, RTGI
 All rights reserved.
+L<http://rtgi.fr/>
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
