@@ -18,7 +18,7 @@ __END__
 
 =head1 NAME
 
-RTGI::Role::UserAgent - Fetch an url using LWP as the HTTP library
+MooseX::UserAgent - Fetch an url using LWP as the HTTP library
 
 =head1 SYNOPSIS
 
