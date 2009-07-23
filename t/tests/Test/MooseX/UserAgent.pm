@@ -128,11 +128,11 @@ sub get_content : Tests(12) {
     }
 }
 
-sub test_cache : Tests(6) {
+sub test_cache : Tests(9) {
     my $test = shift;
     my $url = 'http://en.wikipedia.org';
 
-    my $obj = Test::UserAgent->new(
+    ok my $obj = Test::UserAgent->new(
         useragent_conf => { cache => { use_cache => 1 } },
         ua_cache       => $test->cache
         ),
@@ -141,7 +141,7 @@ sub test_cache : Tests(6) {
     my $res = $obj->fetch($url);
     cmp_ok $res->code, "<", 300, "... fetch is a success";
 
-    $obj = Test::UserAgent::Async->new(
+    ok $obj = Test::UserAgent::Async->new(
         useragent_conf => { cache => { use_cache => 1 } },
         ua_cache       => $test->cache
         ),
@@ -150,7 +150,7 @@ sub test_cache : Tests(6) {
     $res = $obj->fetch($url);
     is $res->code, 304, '... already in cache';
 
-    $obj = Test::UserAgent::Paranoid->new(
+    ok $obj = Test::UserAgent::Paranoid->new(
         useragent_conf => { cache => { use_cache => 1 } },
         ua_cache       => $test->cache
         ),
