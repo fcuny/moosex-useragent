@@ -17,10 +17,15 @@ sub fetch {
     my $request_headers = { 'Accept-Encoding' => 'gzip', };
     $request_headers->{'If-Modified-Since'} = $last_modified
         if $last_modified;
+    $request_headers->{'Content-Length'} = $self->useragent_conf->{max_size}
+        if $self->useragent_conf->{max_size};
+    $request_headers->{'From'} = $self->useragent_conf->{mail}
+        if $self->useragent_conf->{mail};
 
     http_request
         GET     => $url,
         headers => $request_headers,
+        timeout => $self->useragent_conf->{timeout},
         sub {
         my ( $data, $headers ) = @_;
         my $response = HTTP::Response->new;
